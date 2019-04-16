@@ -1,30 +1,30 @@
 package cc.conyli.webflux.domain;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.List;
 
 @Data
-@Entity
 @NoArgsConstructor(force = true)
-@Table(name = "course")
+@Document
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
+    @NonNull
+    @Size(min=5,message = "At least 5 characters long")
     private String courseName;
 
+    private Date createAt = new Date();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "courseId")
-    private final List<Student> students = new ArrayList<>();
-
-    void add(Student student) {
-        this.students.add(student);
-    }
+    private List<Student> students;
 
 }

@@ -1,26 +1,26 @@
 package cc.conyli.webflux.domain;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@Entity
-@Table(name = "student")
 @NoArgsConstructor(force = true)
+@Document
 public class Student implements Serializable {
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
 
     private String firstName;
 
     private String lastName;
-
-    //这里先不设置外键，否则JSON化之后会来回引用，无尽循环
 
     private Integer courseId;
 

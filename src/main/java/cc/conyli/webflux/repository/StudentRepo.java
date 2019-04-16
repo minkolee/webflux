@@ -1,9 +1,13 @@
 package cc.conyli.webflux.repository;
 
 import cc.conyli.webflux.domain.Student;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.bson.types.ObjectId;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import reactor.core.publisher.Mono;
 
-public interface StudentRepo extends JpaRepository<Student, Integer> {
+@CrossOrigin(origins = "*")
+public interface StudentRepo extends ReactiveCrudRepository<Student, Integer> {
+    Mono<Student> findById(ObjectId id);
 
 }
