@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 @CrossOrigin(origins = "*")
 public interface StudentRepo extends ReactiveCrudRepository<Student, Integer> {
-    Mono<Student> findById(ObjectId id);
+    Mono<Student> findById(String id);
 
+    Mono<Student> save(Mono<Student> studentMono);
 }
