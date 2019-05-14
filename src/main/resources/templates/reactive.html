@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>反应式显示</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <p>{{time}} <span style="color:red">{{ ss }}</span></p>
+</div>
+</body>
+
+<script>
+    Date.prototype.format = function(fmt) {
+        var o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        }
+        for(var k in o) {
+            if(new RegExp("("+ k +")").test(fmt)){
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+            }
+        }
+        return fmt;
+    };
+
+
+var timesource = new EventSource("http://localhost:8080/times");
+
+var app = new Vue({
+    el:"#app",
+    data:{
+        time: "",
+        ss:"",
+        change: false
+    },
+    mounted:function () {
+        console.log("挂载了");
+        var _this = this;
+        this.time = new Date().format("hh:mm:ss");
+        timesource.onmessage = function (ev) {
+            var data = ev.data;
+            console.log(data);
+            _this.time = data;
+        }
+    },
+    watch: {
+       time:function () {
+           var _this = this;
+           if(_this.change){
+               _this.ss="+1";
+               setTimeout(function () {
+                   _this.ss = ""
+               }, 800);
+           } else{
+               _this.change = true;
+           }
+
+       }
+    }
+
+})
+
+</script>
+</html>

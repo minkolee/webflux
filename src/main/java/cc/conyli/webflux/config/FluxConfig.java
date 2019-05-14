@@ -4,8 +4,8 @@ import cc.conyli.webflux.repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -25,13 +25,14 @@ public class FluxConfig {
                 .andRoute(GET("/bye"), serverRequest -> ok().body(just("goodbye"), String.class));
     }
 
-//    @Bean
-//    public RouterFunction<?> findALL() {
-//        return route(GET("/students"), request -> ok().body(Mono.just(studentRepo.findById(1), St   .class));
-//    }
+    @Autowired
+    private TimeHandler timeHandler;
 
-//    public Mono<ServerResponse> getAll(ServerRequest serverRequest) {
-//        return ServerResponse.ok().body(just("Hello world"), String.class);
-//    }
+    @Bean
+    public RouterFunction<ServerResponse> timerRouter() {
+        return route(GET("/time"), req -> timeHandler.getTime(req))
+                .andRoute(GET("/date"), timeHandler::getDate)
+                .andRoute(GET("/times"),timeHandler::sendTimePerSec);  // 这种方式相对于上一行更加简洁
+    }
 
 }
